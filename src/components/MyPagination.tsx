@@ -5,7 +5,7 @@ interface PaginationProps {
 
 const MyPagination = ({ currentPage, setCurrentPage }: PaginationProps) => {
   return (
-    <div className="flex justify-between items-center gap-2 text-[#D6C7FF] border-1 border-[#D6C7FF] rounded-full p-2 px-4 text-2xl my-6">
+    <div className="flex justify-between items-center text-[#D6C7FF] border-1 border-[#D6C7FF] rounded-full py-0.5 px-5 text-2xl my-6">
       <button
         onClick={() => setCurrentPage(currentPage - 1)}
         className="cursor-pointer"
@@ -13,7 +13,8 @@ const MyPagination = ({ currentPage, setCurrentPage }: PaginationProps) => {
         Prev
       </button>
       <p className="flex items-center gap-x-3">
-        Current Page: <span className="text-4xl ">{currentPage}</span>
+        Current Page:{" "}
+        <span className="text-4xl fancy-text ">{currentPage}</span>
       </p>
       <button
         onClick={() => setCurrentPage(currentPage + 1)}
