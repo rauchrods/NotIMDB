@@ -5,6 +5,7 @@ import MovieCard from "./components/MovieCard";
 import { API_BASE_URL, API_KEY } from "./apis/constants";
 import { getTrendingMovies, updateSearchCount } from "./appwrite";
 import TrendingMovieCard from "./components/TrendingMovieCard";
+import MyPagination from "./components/MyPagination";
 
 const options = {
   method: "GET",
@@ -23,6 +24,7 @@ function App() {
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const fetchMovies = async (query: string): Promise<void> => {
     setIsLoading(true);
@@ -31,7 +33,7 @@ function App() {
         ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(
             query.trim()
           )}`
-        : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
+        : `${API_BASE_URL}/discover/movie?page=${currentPage}&sort_by=popularity.desc`;
       const response = await fetch(endpoint, options);
       if (!response.ok) {
         throw new Error("Something went wrong");
@@ -61,7 +63,7 @@ function App() {
 
       setTrendingMovies(movies);
 
-      console.log("trending movies", movies);
+      // console.log("trending movies", movies);
     } catch (error) {
       console.log(`Error Fetching TrendingMovies ${error}`);
     }
@@ -72,7 +74,7 @@ function App() {
       fetchMovies(searchTerm);
     }, 800);
     return () => clearTimeout(timer);
-  }, [searchTerm]);
+  }, [searchTerm, currentPage]);
 
   useEffect(() => {
     loadTrendingMovies();
@@ -80,7 +82,7 @@ function App() {
 
   return (
     <main>
-      <div className="pattern"></div>
+      <div className="pattern" />
       <div className="wrapper">
         <header>
           <img src="./hero.png" alt="" />
@@ -97,10 +99,21 @@ function App() {
 
             <ul>
               {trendingMovies.map((movie, index) => (
-                <TrendingMovieCard movie={movie} index={index} key={movie.id} />
+                <TrendingMovieCard
+                  movie={movie}
+                  index={index}
+                  key={movie.$id}
+                />
               ))}
             </ul>
           </section>
+        )}
+
+        {!searchTerm && (
+          <MyPagination
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
         )}
 
         <section className="all-movies">
@@ -124,6 +137,12 @@ function App() {
             </ul>
           )}
         </section>
+        {!searchTerm && (
+          <MyPagination
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        )}
       </div>
     </main>
   );
